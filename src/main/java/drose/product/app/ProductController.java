@@ -2,7 +2,7 @@ package drose.product.app;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,13 +42,38 @@ public class ProductController {
 		 return "drose/product/detail.jsp"; 
 	 }
 	 
+	 @ResponseBody
+	 @RequestMapping(value = "search/detail/update") 
+	 public Map<String, Object> updateProduct(
+			 final Model model,@ModelAttribute("ProductData") ProductData productData) throws Exception { 
+		 	System.out.println("Update FOrm");
+		 	System.out.println(productData);
+		 	
+		 	Map<String, Object> result = new HashMap<String, Object>();
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			productRepository.updateProductById(productData.getId(), productData.getPrice(), productData.getStockquantity());
+			parameters.put("init", false);
+			// Data found
+			result.put("error", Boolean.FALSE);
+			result.put("successMessage", "Success Update Data");
+			result.put("parameters", parameters);
+			return result;
+	 }
+	 
+
+	 @RequestMapping(value = "search/detail/delete") 
+	 public final String deleteProduct(@RequestParam("id") String id) throws Exception { 
+		 	System.out.println("delete product");
+		 	System.out.println(id);
+		 	productRepository.deleteProductById(id);
+		 	return "redirect:/product/search";
+	 }
+	 
 	@ResponseBody
 	@RequestMapping(value = "insert/data", method = RequestMethod.POST)
-	public Map<String, Object> insertData(@ModelAttribute("ProductData") ProductData productData,
-			HttpServletResponse responsehttp) throws Exception {
+	public Map<String, Object> insertData(@ModelAttribute("ProductData") ProductData productData) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> parameters = new HashMap<String, Object>();
-
 		productRepository.insertData(productData);
 		parameters.put("init", false);
 		// Data found

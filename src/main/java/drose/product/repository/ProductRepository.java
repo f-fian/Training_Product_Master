@@ -1,10 +1,9 @@
 package drose.product.repository;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.*;
 
-import javax.naming.NamingException;
+
 import drose.product.model.ProductData;
 import drose.product.model.ProductForm;
 import jp.co.intra_mart.foundation.database.*;
@@ -123,5 +122,35 @@ public class ProductRepository {
             throw new Exception("DB error in selectSearchResult()", e);
         }
     }
+
+	public void updateProductById(String id,String newPrice, String newQuantity) throws Exception {
+		try {
+			SQLManager sqlManager = new SQLManager();
+			SearchCondition searchCondition = new SearchCondition();
+			searchCondition.addCondition("id", Integer.parseInt(id));
+			
+			ColumnValues columnValues = new ColumnValues();
+			columnValues.add("price", Double.parseDouble(newPrice));
+			columnValues.add("stockquantity", Integer.parseInt(newQuantity));
+			sqlManager.update("t_products", columnValues, searchCondition);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("DB error in insertData()", e);
+		}
+	}
+
+	public void deleteProductById(String id) throws Exception {
+		
+		try {
+			SQLManager sqlManager = new SQLManager();
+			SearchCondition searchCondition = new SearchCondition();
+			searchCondition.addCondition("id", Integer.parseInt(id));
+			sqlManager.delete("t_products", searchCondition);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("DB error in insertData()", e);
+		}
+		
+	}
 
 }

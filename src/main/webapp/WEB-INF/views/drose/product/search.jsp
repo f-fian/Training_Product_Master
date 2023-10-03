@@ -65,6 +65,7 @@ function onDblClickRow(rowid, e) {
         
         form.submit();
  }
+ 
     
  </script>
 </imui:head>

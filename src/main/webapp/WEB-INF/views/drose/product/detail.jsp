@@ -14,6 +14,7 @@
 	<title>Untitled</title>
 	<script src="ui/libs/jquery-validation-1.9.0/jquery.validate.js"></script>
 	<script type="text/javascript">
+
 		var rules = {
 			product_name : {
 				required : true
@@ -45,22 +46,61 @@
 		};
 		$(function() {
 			
-			$('#insertbutton').click(function() {
-				console.log("masuk form");
-				if (!imuiValidate('#insertForm', rules, messages))
-					return;
-				$('#insertForm').submit();
-			});
+			$('#updatebutton').click(function() {
+					imuiConfirm('Do you want to proceed update this data?', 'Confirmation', function(){
+						$("#updateForm").attr("action", "product/search/detail/update");
+	                    imuiAjaxSend("#updateForm", "POST", "json", $.noop,
+	                            $.noop, true, 10000, false, function(returnObject) {
+	                    				
+	                    				console.log("returnObject")
+	                    				console.log(returnObject);
+	                                if (!returnObject.parameters.init) {
+	                                    // clear the inpu
+	                                }else{
+	                                	console.log("ke sini karena error")
+	                                }
+	                            });
+	                    return false;
+	                });       
+	            });
+			
 
 			$('#clearbutton').click(function() {
 				console.log('sini')
-				$('#product_name').val("")
 				$('#quantity').val("")
 				$('#price').val("")
 			});
 			
 			
+			$("#deleteIcon").click(()=>{
+				imuiConfirm('Do you want to proceed delete this data?', 'Confirmation', function(){
+					console.log("id")
+					console.log($("#id").val())
+					var id = $("#id").val()
+					
+			        var url = "product/search/detail/delete";
+			        var form = document.createElement("form");
+			        form.setAttribute("action", url);
+			        form.setAttribute("method", "post");
+			        document.body.appendChild(form);
+			        var input = document.createElement('input');
+			        input.setAttribute('type', 'text');
+			        input.setAttribute('name', "id");
+			        input.setAttribute('value',id);
+			        form.appendChild(input);
+			        
+			        form.submit()
+			        
+			        
+			        
+					
+				})
+			})
+			
+			
 		});
+		
+		
 	</script>
 </imui:head>
 <!-- 画面タイトル -->
@@ -74,6 +114,8 @@
 			<!-- 戻るボタン -->
 			<li><a href="#" class="imui-toolbar-icon" title="Back"><span
 					class="im-ui-icon-common-16-back"></span></a></li>
+			<li><a class="imui-toolbar-icon" title="Delete" id="deleteIcon"><span
+					class="im-ui-icon-common-16-trashbox"></span></a></li>
 		</ul>
 	</div>
 </div>
@@ -83,18 +125,22 @@
 	<div class="imui-chapter-title">
 		<h2>Insert New Product</h2>
 	</div>
-	<form:form id="insertForm" name="insertForm" method="POST"
-		class="target_form mt-10" action="product/insert/data"
-		modelAttribute="insertProductForm">
+	<form:form id="updateForm" name="updateForm" method="POST"
+		class="target_form mt-10" modelAttribute="insertProductForm">
 		<table class="imui-form">
+			<tr hidden>
+				<th><label>Product Id</label></th>
+				<td><imui:textbox id="id" name="id" readonly value="${product.id}"
+						style="width: 200px; background-color: #f0f0f0;" /></td>
+			</tr>
 			<tr>
 				<th><label>Product Name</label></th>
-				<td><imui:textbox id="product_name" name="product_name" readonly value="${product.name}"
+				<td><imui:textbox id="name" name="name" readonly value="${product.name}"
 						style="width: 200px; background-color: #f0f0f0;" /></td>
 			</tr>
 			<tr>
 				<th><label>Product Category</label></th>
-				<td><imui:textbox id="product_categoty" name="product_categoty" readonly value="${product.category}"
+				<td><imui:textbox id="category" name="category" readonly value="${product.category}"
 						style="width: 200px; background-color: #f0f0f0;" /></td>
 			</tr>
 			<tr>
@@ -104,7 +150,7 @@
 			</tr>
 			<tr>
 				<th><label for="quantity">Quantity</label></th>
-				<td><input type="number" id="quantity" name="quantity" value="${product.stockquantity}"
+				<td><input type="number" id="stockquantity" name="stockquantity" value="${product.stockquantity}"
 					style="width: 200px;"></td>
 			</tr>
 			<tr>

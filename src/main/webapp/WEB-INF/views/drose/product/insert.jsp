@@ -53,6 +53,8 @@
                         imuiAjaxSend("#insertForm", "POST", "json", $.noop,
                                 $.noop, true, 10000, false, function(
                                         returnObject) {
+		                        	console.log("returnObject")
+		            				console.log(returnObject);
                                     if (!returnObject.parameters.init) {
                                         // clear the input
                                         $("#name").val("");
